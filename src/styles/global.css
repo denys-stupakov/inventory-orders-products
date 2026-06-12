@@ -177,6 +177,20 @@ body {
 
 .sidebar__nav-link:hover { color: var(--text-main); }
 
+.lang-toggle {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: border-color 0.2s, color 0.2s;
+  margin-left: 12px;
+}
+.lang-toggle:hover { border-color: var(--green); color: var(--green); }
+
 .sidebar__user-name {
   font-size: 11px;
   color: var(--text-muted);

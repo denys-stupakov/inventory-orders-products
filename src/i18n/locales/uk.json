@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "orders": "ПРИХІД",
+    "groups": "ГРУПИ",
+    "products": "ПРОДУКТИ",
+    "users": "КОРИСТУВАЧІ",
+    "settings": "НАЛАШТУВАННЯ",
+    "logout": "ВИЙТИ"
+  },
+  "orders": {
+    "title": "Приходи",
+    "addBtn": "Додати прихід",
+    "products": "Продуктів",
+    "noProducts": "Немає продуктів у цьому приході",
+    "addProduct": "+ Додати продукт",
+    "deleteConfirm": "Ви впевнені, що хочете видалити цей прихід?",
+    "deleteProductConfirm": "Ви впевнені, що хочете видалити цей продукт?"
+  },
+  "products": {
+    "title": "Продукти",
+    "filterType": "Тип:",
+    "filterSpec": "Специфікація:",
+    "allTypes": "Всі типи",
+    "all": "Всі",
+    "free": "Вільний",
+    "repair": "В ремонті",
+    "new": "новий",
+    "used": "Б/В"
+  },
+  "groups": {
+    "title": "Групи",
+    "products": "Продуктів",
+    "noProducts": "Немає продуктів у цій групі",
+    "addProduct": "+ Додати продукт"
+  },
+  "modal": {
+    "cancel": "СКАСУВАТИ",
+    "delete": "ВИДАЛИТИ"
+  },
+  "login": {
+    "title": "Вхід у систему",
+    "email": "Email",
+    "password": "Пароль",
+    "submit": "Увійти",
+    "loading": "Вхід...",
+    "error": "Неправильний email або пароль",
+    "emailRequired": "Email обов'язковий",
+    "emailInvalid": "Неправильний формат email",
+    "passwordRequired": "Пароль обов'язковий",
+    "passwordShort": "Мінімум 6 символів"
+  },
+  "header": {
+    "sessions": "Активних сесій:"
+  }
+}

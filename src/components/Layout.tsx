@@ -6,14 +6,22 @@ import { setActiveSessions } from '../store/appSlice';
 import { io } from 'socket.io-client';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { t, i18n } = useTranslation();
   const [now, setNow] = useState(new Date());
   const [search, setSearch] = useState('');
+
+  const toggleLang = () => {
+    const next = i18n.language === 'uk' ? 'en' : 'uk';
+    i18n.changeLanguage(next);
+    localStorage.setItem('lang', next);
+  };
   const activeSessions = useSelector((s: RootState) => s.app.activeSessions);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -72,8 +80,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <span className="app-header__time">⏱ {timeStr}</span>
           </div>
           <div className="app-header__sessions">
-            Активных сессий: {activeSessions}
+            {t('header.sessions')} {activeSessions}
           </div>
+          <button className="lang-toggle" onClick={toggleLang}>
+            {i18n.language === 'uk' ? 'EN' : 'UK'}
+          </button>
         </div>
       </header>
 
@@ -95,7 +106,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 'sidebar__nav-link' + (isActive ? ' active' : '')
               }
             >
-              ПРИХОД
+              {t('nav.orders')}
             </NavLink>
             <NavLink
               to="/groups"
@@ -103,7 +114,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 'sidebar__nav-link' + (isActive ? ' active' : '')
               }
             >
-              ГРУППЫ
+              {t('nav.groups')}
             </NavLink>
             <NavLink
               to="/products"
@@ -111,11 +122,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 'sidebar__nav-link' + (isActive ? ' active' : '')
               }
             >
-              ПРОДУКТЫ
+              {t('nav.products')}
             </NavLink>
-            <span className="sidebar__nav-link">ПОЛЬЗОВАТЕЛИ</span>
-            <span className="sidebar__nav-link">НАСТРОЙКИ</span>
-            <button className="sidebar__logout" onClick={handleLogout}>ВЫЙТИ</button>
+            <span className="sidebar__nav-link">{t('nav.users')}</span>
+            <span className="sidebar__nav-link">{t('nav.settings')}</span>
+            <button className="sidebar__logout" onClick={handleLogout}>{t('nav.logout')}</button>
           </div>
         </nav>
 
