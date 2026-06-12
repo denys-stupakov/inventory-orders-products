@@ -16,3 +16,8 @@ store.subscribe(() => {
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+// Typed hooks
+import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
+export const useAppDispatch = () => useReduxDispatch<AppDispatch>();
+export const useAppSelector = useReduxSelector;

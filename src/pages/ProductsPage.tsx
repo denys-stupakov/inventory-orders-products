@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
-import { deleteProduct } from '../store/appSlice';
+import { deleteProductAsync, loadProducts } from '../store/appSlice';
+import { AppDispatch } from '../store';
 import { Product } from '../types';
 import DeleteModal from '../components/DeleteModal';
 import { format } from 'date-fns';
@@ -10,7 +11,8 @@ import { ru } from 'date-fns/locale';
 const ProductsPage: React.FC = () => {
   const products = useSelector((s: RootState) => s.app.products);
   const orders = useSelector((s: RootState) => s.app.orders);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => { dispatch(loadProducts()); }, [dispatch]);
 
   const [typeFilter, setTypeFilter] = useState('');
   const [specFilter, setSpecFilter] = useState('');
@@ -196,7 +198,7 @@ const ProductsPage: React.FC = () => {
           product={deleteTarget}
           onCancel={() => setDeleteTarget(null)}
           onConfirm={() => {
-            dispatch(deleteProduct(deleteTarget.id));
+            dispatch(deleteProductAsync(deleteTarget.id));
             setDeleteTarget(null);
           }}
         />

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store';
-import { deleteOrder, deleteProduct } from '../store/appSlice';
+import { RootState, AppDispatch } from '../store';
+import { deleteOrderAsync, deleteProductAsync, loadOrders } from '../store/appSlice';
 import { Order, Product } from '../types';
 import DeleteModal from '../components/DeleteModal';
 import { format } from 'date-fns';
@@ -9,7 +9,9 @@ import { ru } from 'date-fns/locale';
 
 const OrdersPage: React.FC = () => {
   const orders = useSelector((s: RootState) => s.app.orders);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => { dispatch(loadOrders()); }, [dispatch]);
 
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [deleteOrderTarget, setDeleteOrderTarget] = useState<Order | null>(null);
@@ -165,7 +167,7 @@ const OrdersPage: React.FC = () => {
           product={deleteOrderTarget.products[0] || null}
           onCancel={() => setDeleteOrderTarget(null)}
           onConfirm={() => {
-            dispatch(deleteOrder(deleteOrderTarget.id));
+            dispatch(deleteOrderAsync(deleteOrderTarget.id));
             setDeleteOrderTarget(null);
             if (selectedOrderId === deleteOrderTarget.id) setSelectedOrderId(null);
           }}
@@ -178,7 +180,7 @@ const OrdersPage: React.FC = () => {
           product={deleteProductTarget}
           onCancel={() => setDeleteProductTarget(null)}
           onConfirm={() => {
-            dispatch(deleteProduct(deleteProductTarget.id));
+            dispatch(deleteProductAsync(deleteProductTarget.id));
             setDeleteProductTarget(null);
           }}
         />
