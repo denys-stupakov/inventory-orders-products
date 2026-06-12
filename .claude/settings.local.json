@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sleep 3 && cat /tmp/vite-dev.log)"
+    ]
+  }
+}
