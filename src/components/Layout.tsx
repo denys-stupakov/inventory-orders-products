@@ -98,8 +98,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="app-body">
         {/* SIDEBAR */}
         <nav className="sidebar">
-          <div className="sidebar__avatar">
-            👤
+          <div className="sidebar__avatar-wrap">
+            <div className="sidebar__avatar">👤</div>
             <span className="sidebar__settings">⚙</span>
           </div>
 
