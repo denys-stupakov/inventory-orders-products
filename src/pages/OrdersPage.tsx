@@ -4,6 +4,8 @@ import { RootState, AppDispatch } from '../store';
 import { deleteOrderAsync, deleteProductAsync, loadOrders } from '../store/appSlice';
 import { Order, Product } from '../types';
 import DeleteModal from '../components/DeleteModal';
+import OrderForm from '../components/OrderForm';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -16,6 +18,13 @@ const OrdersPage: React.FC = () => {
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [deleteOrderTarget, setDeleteOrderTarget] = useState<Order | null>(null);
   const [deleteProductTarget, setDeleteProductTarget] = useState<Product | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [showChart, setShowChart] = useState(false);
+
+  const chartData = orders.map((o) => ({
+    name: o.title.slice(0, 14) + '…',
+    products: o.products.length,
+  }));
 
   const selectedOrder = orders.find((o) => o.id === selectedOrderId) || null;
 
@@ -50,9 +59,34 @@ const OrdersPage: React.FC = () => {
   return (
     <div>
       <div className="page-header">
-        <button className="page-header__add-btn" title="Добавить приход">+</button>
+        <button className="page-header__add-btn" title="Добавить приход" onClick={() => setShowForm(true)}>+</button>
         <h1 className="page-header__title">Приходы / {orders.length}</h1>
+        <button
+          className="chart-toggle-btn"
+          onClick={() => setShowChart((v) => !v)}
+          title="Показать/скрыть статистику"
+        >
+          📊
+        </button>
       </div>
+
+      {showChart && (
+        <div className="orders-chart animate__animated animate__fadeIn animate__faster">
+          <div className="orders-chart__title">Продуктів по приходах</div>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={chartData} margin={{ top: 4, right: 16, left: -20, bottom: 0 }}>
+              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+              <Tooltip />
+              <Bar dataKey="products" radius={[4, 4, 0, 0]}>
+                {chartData.map((_, i) => (
+                  <Cell key={i} fill={i % 2 === 0 ? '#4caf50' : '#81c784'} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
 
       <div className="orders-layout">
         {/* LEFT: список приходов */}
@@ -185,6 +219,8 @@ const OrdersPage: React.FC = () => {
           }}
         />
       )}
+
+      {showForm && <OrderForm onClose={() => setShowForm(false)} />}
     </div>
   );
 };
