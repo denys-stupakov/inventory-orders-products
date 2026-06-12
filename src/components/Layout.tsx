@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { setActiveSessions } from '../store/appSlice';
+import { io } from 'socket.io-client';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -16,6 +17,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const activeSessions = useSelector((s: RootState) => s.app.activeSessions);
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const authUser = (() => {
+    try { return JSON.parse(localStorage.getItem('authUser') || 'null'); } catch { return null; }
+  })();
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
+    navigate('/login');
+  };
 
   // Live clock
   useEffect(() => {
@@ -23,42 +35,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return () => clearInterval(t);
   }, []);
 
-  // Simulate WebSocket sessions count using BroadcastChannel
+  // Socket.io — real WebSocket sessions counter
   useEffect(() => {
-    let count = 1;
-    const channel = new BroadcastChannel('inventory-sessions');
-
-    const sendPing = () => channel.postMessage({ type: 'ping' });
-    const sendPong = () => channel.postMessage({ type: 'pong' });
-
-    // Notify others on open
-    channel.postMessage({ type: 'open' });
-
-    channel.onmessage = (e) => {
-      if (e.data.type === 'open') {
-        count++;
-        dispatch(setActiveSessions(count));
-        sendPong();
-      } else if (e.data.type === 'pong') {
-        // another tab acknowledged
-        count = Math.max(count, activeSessions + 1);
-        dispatch(setActiveSessions(activeSessions + 1));
-      } else if (e.data.type === 'close') {
-        count = Math.max(1, count - 1);
-        dispatch(setActiveSessions(count));
-      }
-    };
-
-    window.addEventListener('beforeunload', () => {
-      channel.postMessage({ type: 'close' });
-    });
-
-    return () => {
-      channel.postMessage({ type: 'close' });
-      channel.close();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const socket = io('http://localhost:3001', { transports: ['websocket'] });
+    socket.on('sessions:update', (count: number) => dispatch(setActiveSessions(count)));
+    return () => { socket.disconnect(); };
+  }, [dispatch]);
 
   const dayName = format(now, 'EEEE', { locale: ru });
   const dateStr = format(now, 'dd MMM, yyyy', { locale: ru });
@@ -102,6 +84,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="sidebar__avatar">👤</div>
             <span className="sidebar__settings">⚙</span>
           </div>
+          {authUser && (
+            <div className="sidebar__user-name">{authUser.name}</div>
+          )}
 
           <div className="sidebar__nav">
             <NavLink
@@ -130,6 +115,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </NavLink>
             <span className="sidebar__nav-link">ПОЛЬЗОВАТЕЛИ</span>
             <span className="sidebar__nav-link">НАСТРОЙКИ</span>
+            <button className="sidebar__logout" onClick={handleLogout}>ВЫЙТИ</button>
           </div>
         </nav>
 
