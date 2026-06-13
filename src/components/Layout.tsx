@@ -44,8 +44,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, []);
 
   // Socket.io — real WebSocket sessions counter
+  // Dev: connects to http://localhost:3001 | Docker: connects to same host (nginx proxies /socket.io)
   useEffect(() => {
-    const socket = io('http://localhost:3001', { transports: ['websocket'] });
+    const serverUrl = import.meta.env.VITE_API_URL || '';
+    const socket = io(serverUrl, { transports: ['websocket'] });
     socket.on('sessions:update', (count: number) => dispatch(setActiveSessions(count)));
     return () => { socket.disconnect(); };
   }, [dispatch]);

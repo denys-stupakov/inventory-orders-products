@@ -4,16 +4,17 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 
+const PORT = process.env.PORT || 3001;
+const JWT_SECRET = process.env.JWT_SECRET || 'inventory-secret-key-2024';
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  cors: { origin: 'http://localhost:5173', credentials: true },
+  cors: { origin: CORS_ORIGIN, credentials: true },
 });
 
-const PORT = 3001;
-const JWT_SECRET = 'inventory-secret-key-2024';
-
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json());
 
 // ── In-memory DB ──────────────────────────────────────────────

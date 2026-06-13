@@ -70,12 +70,15 @@ npm run test        # запуск один раз
 npm run test:watch  # режим watch
 ```
 
-## Docker
+## Docker (рекомендований спосіб запуску)
+
+Запускає frontend (nginx :80) + backend (Express :3001) одною командою:
 
 ```bash
-docker build -t inventory-app .
-docker run -p 8080:80 inventory-app
+docker compose up
 ```
+
+Відкрити: http://localhost
 
 ## Demo-акаунти
 

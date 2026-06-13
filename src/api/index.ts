@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+// Dev: VITE_API_URL=http://localhost:3001  → http://localhost:3001/api
+// Docker: VITE_API_URL=""                 → /api  (nginx proxies to backend)
+const BASE = import.meta.env.VITE_API_URL || '';
+
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api',
+  baseURL: `${BASE}/api`,
 });
 
 api.interceptors.request.use((config) => {

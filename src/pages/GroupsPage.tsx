@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store';
-import { deleteProduct } from '../store/appSlice';
+import { RootState, AppDispatch } from '../store';
+import { deleteProductAsync } from '../store/appSlice';
 import { Product } from '../types';
 import DeleteModal from '../components/DeleteModal';
 import { format } from 'date-fns';
@@ -16,7 +16,7 @@ interface Group {
 
 const GroupsPage: React.FC = () => {
   const products = useSelector((s: RootState) => s.app.products);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
@@ -141,7 +141,7 @@ const GroupsPage: React.FC = () => {
           product={deleteTarget}
           onCancel={() => setDeleteTarget(null)}
           onConfirm={() => {
-            dispatch(deleteProduct(deleteTarget.id));
+            dispatch(deleteProductAsync(deleteTarget.id));
             setDeleteTarget(null);
           }}
         />
