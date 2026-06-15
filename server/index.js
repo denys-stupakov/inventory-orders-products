@@ -3,6 +3,8 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'inventory-secret-key-2024';
@@ -113,6 +115,14 @@ io.on('connection', (socket) => {
     activeSessions--;
     io.emit('sessions:update', activeSessions);
   });
+});
+
+// ── Serve React SPA (production build) ───────────────────────
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const distPath = join(__dirname, '../dist');
+app.use(express.static(distPath));
+app.get('/{*splat}', (_req, res) => {
+  res.sendFile(join(distPath, 'index.html'));
 });
 
 httpServer.listen(PORT, () => {

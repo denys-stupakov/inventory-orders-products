@@ -1,28 +1,10 @@
 services:
-  # ── Backend: Express + Socket.io REST API ─────────────────────
-  backend:
-    build:
-      context: .
-      dockerfile: server/Dockerfile
+  app:
+    build: .
+    ports:
+      - "80:3001"
     environment:
       - NODE_ENV=production
       - PORT=3001
       - JWT_SECRET=inventory-secret-key-2024
-      # nginx proxies requests, so origin appears as the nginx host
-      - CORS_ORIGIN=http://localhost
-    restart: unless-stopped
-    # Not exposed to host by default — nginx proxies internally
-    # Uncomment to access backend directly:
-    # ports:
-    #   - "3001:3001"
-
-  # ── Frontend: React (built) served by nginx ───────────────────
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
     restart: unless-stopped
